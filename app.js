@@ -123,7 +123,7 @@ function after_win(player) {
     }
     else {
         document.getElementById("vic").innerHTML = "PLAYER2 WINS";
-        document.getElementById("vic").style.color = 'blue';
+        document.getElementById("vic").style.color = 'skyblue';
     }
     for (var i = 1; i < 8; i++) {
         document.getElementById("b"+i).disabled = true;
@@ -136,7 +136,7 @@ function add_hole(count) {
             if (turn == 0) {
                 document.getElementById("hole"+(window.stack_array[count])).style.backgroundColor='yellow';
                 document.getElementById("t1").innerHTML = "2";
-                document.getElementById("t1").style.color='blue';
+                document.getElementById("t1").style.color='skyblue';
                 turn = 1;
                 end = check_win(window.stack_array[count], 1);
                 if (end != 0) {
@@ -145,7 +145,7 @@ function add_hole(count) {
                 }
             }
             else {
-                document.getElementById("hole"+(window.stack_array[count])).style.backgroundColor='blue';
+                document.getElementById("hole"+(window.stack_array[count])).style.backgroundColor='skyblue';
                 document.getElementById("t1").innerHTML = "1";
                 document.getElementById("t1").style.color='yellow';
                 turn = 0;
