@@ -69,6 +69,18 @@ header >h1 {
     display: inline-block;
 }
 
+#b1, #b2, #b3, #b4, #b5, #b6, #b7 {
+    height: 30px;
+}
+
+
+#r {
+    position: relative;
+    bottom: -190px;
+    right: 480px;
+    height: 30px;
+}
+
 button:hover {
     cursor: pointer;
 }

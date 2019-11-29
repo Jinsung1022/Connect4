@@ -29,6 +29,7 @@ const button_div4 = document.getElementById("b4");
 const button_div5 = document.getElementById("b5");
 const button_div6 = document.getElementById("b6");
 const button_div7 = document.getElementById("b7");
+var button_divr = document.getElementById("r");
 
 var div_array = [button_div1, button_div2, button_div3, button_div4, button_div5, button_div6, button_div7];
 var stack_array = [stack1, stack2, stack3, stack4, stack5, stack6, stack7];
@@ -40,6 +41,10 @@ for (var i = 0; i < 7; i++){
     for (var j = 0; j < 8; j++) {
         board[i][j] = 0;
     }
+}
+
+function reset() {
+    window.location.reload();
 }
 
 function check_match(var1, var2, var3, var4) {
@@ -156,6 +161,10 @@ function add_hole(count) {
 }
 
 function main() {
+    console.log(window.button_divr);
+    button_divr.addEventListener('click', function() {
+        reset();
+    })
     for (var i = 0; i < 7; i++) {
         add_hole(i);
     }
