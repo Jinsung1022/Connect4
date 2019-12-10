@@ -37,8 +37,8 @@ var board = new Array(6);
 for (var i = 0; i < 7; i++) {
     board[i] = []
 }
-for (var i = 0; i < 7; i++){
-    for (var j = 0; j < 8; j++) {
+for (var i = 0; i < 6; i++){
+    for (var j = 0; j < 7; j++) {
         board[i][j] = 0;
     }
 }
@@ -77,18 +77,19 @@ class Connectfour {
      */
     convert_index(r, c) {
         var val = (r*7) + (c+1);
+        console.log(val, r, c);
         return val;
     }
 
     evaluate_block(block, player) {
-        score = 0;
-        opp_player = player;
+        var score = 0;
+        var opp_player = player;
         if (player == 1) {
             opp_player = 2;
         }
-        player_count = 0;
-        opp_count = 0;
-        empty_count = 0;
+        var player_count = 0;
+        var opp_count = 0;
+        var  empty_count = 0;
         for (var i = 0; i < block.length; i++){
             if (block[i] == player)
                 player_count++;
@@ -115,9 +116,9 @@ class Connectfour {
     }
 
     count_scores(board, player) {
-        score = 0
+        var score = 0;
 
-        center_count = 0;
+        var center_count = 0;
         for (var i = 0; i < 6; i++) {
             if (board[i][3] == player) {
                 center_count++;
@@ -173,7 +174,14 @@ class Connectfour {
         return score;
     }
 
-    place_dot(board, index, player) {
+    /**
+     * Change the index of the "board" to the given player #
+     * DOES NOT change the visual rep.
+     * @param {Array} board 
+     * @param {int} index Index of the hole. (1 ~ 42)
+     * @param {int} player # of player
+     */
+    place_dot(bd, index, player) {
         var row = 0;
         var column = 0;
         if (index%7 == 0) {
@@ -184,23 +192,27 @@ class Connectfour {
             row = Math.floor(index/7)
             column = index%7 - 1;
         }
-        board[row][column] = player;
+        bd[row][column] = player;
     }
+
     /** 
      * Checks if a given player has won
      * @param {int} index  Index of the placed hole.
      * @param {int} player Player checked for winning.
+     * @param {str} mode Whether it is called during simulation or real game.
      * @returns {int} Returns the player # if won. If not, returns 0.
     */
-    check_win(board, player) {
+    check_win(board, player, mode) {
         // Downward
         for (var r = 0; r < 3; r++)
             for (var c = 0; c < 7; c++)
                 if (this.check_match(board[r][c], board[r+1][c], board[r+2][c], board[r+3][c])){
-                    document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+1, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+2, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+3, c)).style.backgroundColor = 'orange';
+                    if (mode == 'real') {
+                        document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+1, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+2, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+3, c)).style.backgroundColor = 'orange';
+                    }
                     if (board[r][c] == player)
                         return true;
                 }
@@ -209,10 +221,12 @@ class Connectfour {
         for (r = 0; r < 6; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r][c+1], board[r][c+2], board[r][c+3])){
-                    document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r, c+1)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r, c+2)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r, c+3)).style.backgroundColor = 'orange';
+                    if (mode == 'real') {
+                        document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r, c+1)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r, c+2)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r, c+3)).style.backgroundColor = 'orange';
+                    }
                     if (board[r][c] == player)
                         return true;
                 }
@@ -221,10 +235,12 @@ class Connectfour {
         for (r = 0; r < 3; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3])){
-                    document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+1, c+1)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+2, c+2)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r+3, c+3)).style.backgroundColor = 'orange';
+                    if (mode == 'real') {
+                        document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+1, c+1)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+2, c+2)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r+3, c+3)).style.backgroundColor = 'orange';            
+                    }
                     if (board[r][c] == player)
                         return true;
                 }
@@ -233,10 +249,12 @@ class Connectfour {
         for (r = 3; r < 6; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3])){
-                    document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r-1, c+1)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r-2, c+2)).style.backgroundColor = 'orange';
-                    document.getElementById("hole"+this.convert_index(r-3, c+3)).style.backgroundColor = 'orange';
+                    if (mode == 'real') {
+                        document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r-1, c+1)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r-2, c+2)).style.backgroundColor = 'orange';
+                        document.getElementById("hole"+this.convert_index(r-3, c+3)).style.backgroundColor = 'orange';
+                    }
                     if (board[r][c] == player)
                         return true;
                 }
@@ -277,30 +295,43 @@ class Connectfour {
                     turn = 1;
                     self.index = window.stack_array[count];
                     self.player = 1;
-                    self.place_dot(window.board, window.stack_array[count], 1);
-                    var end = self.check_win(window.board, 1);
+                    self.place_dot(board, window.stack_array[count], 1);
+                    var end = self.check_win(board, 1, 'real');
                     if (end != false) {
                         self.after_win(1);
                         //window.location.reload(false);
                     }
                 }
-                else {
-                    document.getElementById("hole"+(window.stack_array[count])).style.backgroundColor='skyblue';
-                    document.getElementById("t1").innerHTML = "1";
-                    document.getElementById("t1").style.color='yellow';
-                    turn = 0;
-                    self.index = window.stack_array[count];
-                    self.player = 2;
-                    self.place_dot(window.board, window.stack_array[count], 2)
-                    var end = self.check_win(window.board,);
-                    if (end != false) {
-                        self.after_win(2);
-                        //window.location.reload(false);
-                    }
-                }
                     window.stack_array[count] -= 7;
+                    self.ai_move();
             }
         })
+    }
+
+    ai_move() {
+        var self = this;
+        if (turn == 1){
+            var col_num;
+            var pnum;
+            var value;
+            let b_copy = JSON.parse(JSON.stringify(board));
+            value = self.minimax(b_copy, 4, -999999999999999, 999999999999999, 2);
+            col_num = value[0];
+            pnum = value[1];
+            document.getElementById("hole"+(window.stack_array[col_num])).style.backgroundColor='skyblue';
+            document.getElementById("t1").innerHTML = "1";
+            document.getElementById("t1").style.color='yellow';
+            turn = 0;
+            self.index = window.stack_array[col_num];
+            self.player = 2;
+            self.place_dot(board, window.stack_array[col_num], 2);
+            var end = self.check_win(board, 2, 'real');
+            if (end != false) {
+                self.after_win(2);
+                //window.location.reload(false);
+            }
+        }
+            window.stack_array[col_num] -= 7;
     }
 
     /**
@@ -317,133 +348,131 @@ class Connectfour {
         return valid;
     }
 
+    /**
+     * Given the column,
+     * returns the index of the row in which the dot would be dropped to.
+     * @param {Array} board 
+     * @param {int} col Column to be checked on where the dot should be placed.
+     */
     findRowOpen(board, col) {
-        for (var i = 0; i < 6; i++) {
+        for (var i = 5; i > -1; i--) {
             if (board[i][col] == 0) {
                 return i;
             }
         }
     }
 
-    game_over(board) {
-        return this.check_win(board) || length(this.findColEmpty) == 0;
+    game_over(board, player) {
+        return ((this.findColEmpty(board)).length == 0 || this.check_win(board, player, 'sim'));
     }
-
     
-    minimax(board, depth, best, worst, maxPlayer) {
-        var valid_location = this.findColEmpty(board);
-        var is_terminal = game_over(board);
+    minimax(bd, depth, alpha, beta, maxPlayer) {
+        var self = this;
+        var valid_location = this.findColEmpty(bd);
+        var player;
+        // Since we check if the game is over from the previous move,
+        // If maxPlayer, player = 1
+        if (maxPlayer == true) {
+            player = 1;
+        }
+        else {
+            player = 2;
+        }
+        var is_terminal = this.game_over(bd, player);
         if (depth == 0 || is_terminal) {
             if (is_terminal) {
-                if (this.check_win(board, 2)) {
-                    return(10000);
+                if (this.check_win(bd, 2, 'sim')) {
+                    return [null, 10000];
                 }
-                else if (this.check_win(board, 1)) {
-                    return (-10000);
+                else if (this.check_win(bd, 1, 'sim')) {
+                    return [null, -10000];
                 }
                 else {
-                    return (0);
+                    return [null, 0];
                 }
             }
             else {
-                return (count_scores(board, 2));
+                return [null, this.count_scores(bd, 2)];
             }
         }
         if (maxPlayer) {
-            var value = -9999999999
+            //console.log("performing minmax: max");
+            var value = -999999999999999;
+            var best_col;
+            for (var i = 0; i < (valid_location).length; i++) {
+                var row_num = this.findRowOpen(bd, valid_location[i]);
+                var b_copy = JSON.parse(JSON.stringify(bd));
+                var index = this.convert_index(row_num, valid_location[i]);
+                this.place_dot(b_copy, index, 2);
+                //console.log(b_copy[5], b_copy[4]);
+                var new_score;
+                var given;
+                given = this.minimax(b_copy, depth-1, alpha, beta, false);
+                new_score = given[1];
+                console.log("new_score < value", new_score, value);
+                if (new_score > value) {
+                    value = new_score
+                    best_col = valid_location[i];
+                }
+                alpha = Math.max(alpha, value);
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+            console.log("best_col and value", best_col, value)
+            return [best_col, value];
+        }
+        else {
+            //console.log("performing minmax: min");
+            var value = 999999999999999;
+            var best_col;
+            for (var i = 0; i < (valid_location).length; i++) {
+                var row_num = this.findRowOpen(bd, valid_location[i]);
+                var b_copy = JSON.parse(JSON.stringify(bd));
+                var index = this.convert_index(row_num, valid_location[i])
+                this.place_dot(b_copy, index, 1);
+                //console.log(b_copy[5], b_copy[4]);
+                var new_score;
+                var given;
+                given = this.minimax(b_copy, depth-1, alpha, beta, true);
+                new_score = given[1];
+                console.log("new_score < value", new_score, value);
+                if (new_score < value) {
+                    value = new_score;
+                    best_col = valid_location[i];
+                }
+                beta = Math.min(beta, value);
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+            console.log("best_col and value", best_col, value)
+            return [best_col, value];
+
         }
         
 
     }
-    
-/**
-    minimax(board, depth, isMax) {
-        var self = this;
-        var score = self.check_win(self.index, self.player);
-        var valid = self.findColEmpty(board);
-        console.log("The score is: "+score);
-        if (score == 100) {
-            return score;
-        }
-        if (score == -100) {
-            return score;
-        }
-
-        if (isMax) {
-            var best = -1000;
-            valid.forEach(function (item, index) {
-                    row = findRowOpen(board, item);
-                    board[i][j] = 2;
-                    console.log("i and j is: ",i,j);
-                    self.index = self.convert_index(i,j);
-                    if (self.player == 1) {
-                        self.player = 2;
-                    }
-                    else {
-                        self.player = 1;
-                    }
-                    console.log("Got to minimax", depth);
-                    best = Math.max(best, self.minimax(board, depth + 1, !isMax));
-                    board[i][j] = 0;
-            })
-            return best;
-        }
-
-        else {
-            var best = 1000;
-            for (var i = 0; i < 6; i++) {
-                for (var j = 0; j < 7; j++) {
-                    if (board[i][j] == 0) {
-                        board[i][j] = 1;
-                        self.index = self.convert_index(i,j);
-                        if (self.player == 1) {
-                            self.player = 2;
-                        }
-                        else {
-                            self.player = 1;
-                        }
-                    best = Math.min(best, self.minimax(board, depth+1, !isMax));
-                    board[i][j] = 0;
-                    }
-                }
-            }
-            return best;
-        }
-
-    }
-    */
-    /**
-    findBestMove(board) {
-        var self = this;
-        var bestVal = -1000;
-        var bestMove = new Move;
-        bestMove.row = -1;
-        bestMove.col = -1;
-
-        for (var i = 0; i < 6; i++) {
-            for (var j = 0; j < 7; j ++) {
-                if (board[i][j] == 0) {
-                    board[i][j] = 2;
-                    var moveVal = self.minimax(board, 0, false);
-
-                    board[i][j] = 0;
-
-                    if (moveVal > bestVal) {
-                        bestMove.row = i;
-                        bestMove.col = j;
-                        bestVal = moveVal;
-                    }
-                }
-            }
-        }
-
-        return bestMove;
-    }
-    */
 }
 
 
 function main() {
+    /**
+    var sheeps = new Array(4);
+    for (var i = 0; i < 5; i++) {
+        sheeps[i] = []
+    }
+    for (var i = 0; i < 5; i++){
+        for (var j = 0; j < 3; j++) {
+            sheeps[i][j] = 'sheep';
+        }
+    }
+    let cloneSheeps = JSON.parse(JSON.stringify(sheeps));
+    cloneSheeps[2][2] = 'wolf';
+    console.log("original", sheeps[2][2]);
+    console.log("cloned", cloneSheeps[2][2]);
+    */
+
     console.log(window.button_divr);
     button_divr.addEventListener('click', function() {
         reset();
