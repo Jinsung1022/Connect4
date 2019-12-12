@@ -200,19 +200,21 @@ class Connectfour {
      * @param {int} index  Index of the placed hole.
      * @param {int} player Player checked for winning.
      * @param {str} mode Whether it is called during simulation or real game.
-     * @returns {int} Returns the player # if won. If not, returns 0.
+     * @returns {int} Returns whether someone has won.
     */
     check_win(board, player, mode) {
         // Downward
         for (var r = 0; r < 3; r++)
             for (var c = 0; c < 7; c++)
                 if (this.check_match(board[r][c], board[r+1][c], board[r+2][c], board[r+3][c])){
+                    /**
                     if (mode == 'real') {
                         document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+1, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+2, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+3, c)).style.backgroundColor = 'orange';
                     }
+                    */
                     if (board[r][c] == player)
                         return true;
                 }
@@ -221,12 +223,14 @@ class Connectfour {
         for (r = 0; r < 6; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r][c+1], board[r][c+2], board[r][c+3])){
+                    /**
                     if (mode == 'real') {
                         document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r, c+1)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r, c+2)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r, c+3)).style.backgroundColor = 'orange';
                     }
+                    */
                     if (board[r][c] == player)
                         return true;
                 }
@@ -235,12 +239,14 @@ class Connectfour {
         for (r = 0; r < 3; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3])){
+                    /**
                     if (mode == 'real') {
                         document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+1, c+1)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+2, c+2)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r+3, c+3)).style.backgroundColor = 'orange';            
                     }
+                    */
                     if (board[r][c] == player)
                         return true;
                 }
@@ -249,12 +255,14 @@ class Connectfour {
         for (r = 3; r < 6; r++)
             for (c = 0; c < 4; c++)
                 if (this.check_match(board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3])){
+                    /**
                     if (mode == 'real') {
                         document.getElementById("hole"+this.convert_index(r, c)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r-1, c+1)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r-2, c+2)).style.backgroundColor = 'orange';
                         document.getElementById("hole"+this.convert_index(r-3, c+3)).style.backgroundColor = 'orange';
                     }
+                    */
                     if (board[r][c] == player)
                         return true;
                 }
@@ -267,7 +275,12 @@ class Connectfour {
      * @param {int} player Winner's player #
      */
     after_win(player) {
-        if (player == 1) {
+        console.log(this.findColEmpty(board).length == 0);
+        if (this.findColEmpty(board).length == 0) {
+            document.getElementById("vic").innerHTML = "IT'S A DRAW!";
+            document.getElementById("vic").style.color = 'lightgreen';
+        }
+        else if (player == 1) {
             document.getElementById("vic").innerHTML = "PLAYER1 WINS";
             document.getElementById("vic").style.color = 'yellow';
         }
@@ -286,6 +299,7 @@ class Connectfour {
      */
     add_hole(count) {
         var self = this;
+
         window.div_array[count].addEventListener('click', function() {
             if (window.stack_array[count] > count) {
                 if (turn == 0) {
@@ -297,13 +311,36 @@ class Connectfour {
                     self.player = 1;
                     self.place_dot(board, window.stack_array[count], 1);
                     var end = self.check_win(board, 1, 'real');
+                    if (self.findColEmpty(board).length == 0) {
+                        self.after_win(1);
+                    }
                     if (end != false) {
                         self.after_win(1);
                         //window.location.reload(false);
                     }
                 }
+                /**
+                else {
+                    document.getElementById("hole"+(window.stack_array[count])).style.backgroundColor='skyblue';
+                    document.getElementById("t1").innerHTML = "1";
+                    document.getElementById("t1").style.color='yellow';
+                    turn = 0;
+                    self.index = window.stack_array[count];
+                    self.player = 2;
+                    self.place_dot(board, window.stack_array[count], 2);
+                    var end = self.check_win(board, 2, 'real');
+                    if (self.findColEmpty(board).length == 0) {
+                        self.after_win(2);
+                    }
+                    if (end != false) {
+                        self.after_win(2);
+                    }
+                }
+                */
                     window.stack_array[count] -= 7;
-                    self.ai_move();
+                    if (!(self.check_win(board, 1, 'sim'))) {
+                        self.ai_move();
+                    }
             }
         })
     }
@@ -326,6 +363,9 @@ class Connectfour {
             self.player = 2;
             self.place_dot(board, window.stack_array[col_num], 2);
             var end = self.check_win(board, 2, 'real');
+            if (self.findColEmpty(board).length == 0) {
+                self.after_win(2);
+            }
             if (end != false) {
                 self.after_win(2);
                 //window.location.reload(false);
